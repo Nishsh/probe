@@ -78,6 +78,29 @@ git push -u origin main
 
 把这个 IPA 拖进全能签签名即可（见下方第 2 步）。
 
+### 备选：网页打不开 / 提示 "Couldn't check availability"
+
+这个提示是 GitHub 的**仓库名可用性预检**失败，本质是 `github.com` 请求不通（不是名字被占用）。按顺序试：
+
+1. 直接点 **Create repository**（预检失败不影响创建，多数情况能建成）
+2. 换个名字，如 `probe-app-2026`
+3. 无痕窗口 + 关掉广告拦截/翻译插件
+4. 换网络（宽带 ↔ 手机热点），或开启代理并确认代理能访问 github.com
+5. 上 GitHub 前先确认账号邮箱已验证
+
+如果 `github.com` 完全不通、只有 API 可达，用仓库自带的脚本走 API 上传（不需要网页、不需要 git push）：
+
+```powershell
+# 1) 生成 Token：GitHub → Settings → Developer settings → Personal access tokens (classic)
+#    勾选 repo 和 workflow，有效期选 7 天
+# 2) 设到环境变量（不要写进文件、不要发到聊天里）
+$env:GITHUB_TOKEN = "ghp_你的token"
+# 3) 一键建仓 + 上传 + 构建 + 下载
+python tools\push_via_api.py --repo probe --public --watch
+```
+
+产物落在 `dist/Probe-unsigned-ipa.zip`，解压即得 IPA。
+
 > 构建失败怎么查：点进红色 ✗ 的运行 → 左侧 `编译并打包未签名 IPA` 步骤 → 展开看报错。把最后 30 行贴给我，我来改。
 
 ### 方式 B：本地 Mac 一条命令
