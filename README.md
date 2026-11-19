@@ -40,10 +40,45 @@ Probe/                      ← 这个文件夹直接作为 Git 仓库根目录
 
 ### 方式 A：云端编译（没有 Mac 也能用，推荐）
 
-1. 把 `Probe` 文件夹里的所有内容建成一个 GitHub 仓库（Public 仓库的 Actions 免费且不限时长）
-2. 推送后自动触发构建；也可以在仓库 **Actions → build-unsigned-ipa → Run workflow** 手动触发
-3. 等 3~5 分钟，进入该次运行页面，底部 **Artifacts** 下载 `Probe-unsigned-ipa`
-4. 解压得到 `Probe-unsigned.ipa`
+> 用 GitHub 免费提供的 macOS 机器编译，公共仓库完全免费、不限时长。
+
+**① 建仓库**
+
+打开 https://github.com/new →
+- Repository name：`probe`
+- 可见性选 **Public**（免费无限时长；Private 也行，但 macOS 机器按 10 倍扣分钟数）
+- 下面三个初始化选项（README / .gitignore / license）**全部不要勾**
+- 点 **Create repository**
+
+**② 把本地代码推上去**
+
+本目录已经初始化好 git 并完成提交，只需加远程地址并推送（把 `你的用户名` 换成 GitHub 用户名）：
+
+```bash
+cd C:\Users\Administrator\WorkBuddy\2026-10-24-06-20-47\Probe
+git remote add origin https://github.com/你的用户名/probe.git
+git push -u origin main
+```
+
+> 首次推送会弹出浏览器让你登录 GitHub 授权，点同意即可。
+> 如果建仓库时勾了 README 导致被拒，先执行 `git pull --rebase origin main` 再 push。
+
+**③ 等它自动编译**
+
+推送完成后打开仓库页面 → **Actions** 标签：
+- 首次可能提示 "Workflows aren't being run on this repository"，点绿色按钮 **I understand my workflows, go ahead and enable them**
+- 列表里出现 `build-unsigned-ipa`，黄点转圈说明正在跑，**约 3~5 分钟**
+- 想手动重跑：右侧 **Run workflow** → **Run workflow**
+
+**④ 下载 IPA**
+
+点进那次运行（绿色 ✓）→ 页面**最下方 Artifacts** 区域 → 点 `Probe-unsigned-ipa` 下载 zip → 解压得到 **`Probe-unsigned.ipa`**。
+
+**⑤ 进全能签**
+
+把这个 IPA 拖进全能签签名即可（见下方第 2 步）。
+
+> 构建失败怎么查：点进红色 ✗ 的运行 → 左侧 `编译并打包未签名 IPA` 步骤 → 展开看报错。把最后 30 行贴给我，我来改。
 
 ### 方式 B：本地 Mac 一条命令
 
